@@ -17,11 +17,21 @@ cursor.execute('SET NAMES utf8;')
 cursor.execute('SET CHARACTER SET utf8;')
 cursor.execute('SET character_set_connection=utf8;')
 
-fake_news = []
-real_news = []
+
+def insert(text, source, fake):
+    text = text.strip()
+    if len(text) > 1000:
+        print ">>> ", text[0:200]
+        cursor.execute("INSERT INTO news (text, source, fake) VALUES (%s, %s, %s)", (
+            text.encode('utf-8'),
+            source.encode('utf-8'),
+            1 if fake else 0
+        ))
+    else:
+        print "--- (skipped)"
 
 
-def train_titanic():
+def scrape_titanic():
 
     fake_sources = [
     ]
@@ -38,29 +48,41 @@ def train_titanic():
 
         texts = tree.cssselect(s['text_selector'])
         for t in texts:
-            txt = t.text_content().strip()
+            txt = t.text_content()
 
-            if len(txt) > 1000:
-                fake_news.append(txt)
+            insert(txt, "titanic", True)
 
 
-def train_br24():
+def scrape_br24():
     for x in range(3, 10):
         doc = requests.get("https://br24-backend-hackathon.br.de/api/v4/news?limit=1000&page={}".format(x))
         j = json.loads(doc.content)['data']
         for article in j:
             if article['articleType'] == "news_text":
-                real_news.append(article['text'])
+                insert(article['text'], "br24", False)
 
 
-train_br24()
+
+def scrape_postillion():
+    urls = set()
+    for x in range(1, 13):
+        page = requests.get("http://www.der-postillon.com/search?updated-max=2015-{}-01T00:00:00%2B00:00&max-results=50".format(x))
+        tree = html.fromstring(page.content)
+        links = tree.cssselect(".post-title.entry-title a")
+        for l in links:
+            url = l.attrib['href']
+            if len(url) > 0:
+                urls.add(url)
+
+    for url in urls:
+        page = requests.get(url)
+        tree = html.fromstring(page.content)
+        text = tree.cssselect('.post-body')[0]
+        insert(text.text_content(), "postillion", 1)
 
 
-for f in fake_news:
-    cursor.execute("INSERT INTO news (text, fake) VALUES (%s, 1)", (f.encode('utf-8'),))
+scrape_postillion()
 
-for r in real_news:
-    cursor.execute("INSERT INTO news (text, fake) VALUES (%s, 0)", (r.encode('utf-8'),))
 
 # commit your changes
 db.commit()
