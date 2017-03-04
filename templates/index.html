@@ -1,8 +1,42 @@
-$def with (form, result)
+$def with (form, text, result)
+<!DOCTYPE html>
+<html>
 
-$if result: <h1>Result: $result</h1>
+<head>
+	<meta charset="utf-8" />
+	<title>Lügendetektor 3000</title>
+	<style type="text/css">
+		/* <[CDATA[ */
+			* {
+				font-family: sans-serif;
+			}
+			h1 {
+				width: 80%;
+				border: solid 5px #ffff;
+			}
+			h1.real {
+				border-color: #090;
+			}
+			h1.fake {
+				border-color: #900;
+			}
 
-<form name="main" method="post">
+		/* ]]> */
+	</style>
+</head>
+
+<body>
+	<form name="main" method="post">
 $if not form.valid: <p class="error">Try again</p>
-$:form.render()
-<input type="submit" />    </form>
+<textarea name="text" id="text" cols="100" rows="10">$text</textarea><br/>
+<input type="submit" value="prüfen" /></form>
+
+$if result: <h1 class="$result">Ergebnis: $result</h1>
+$else: <h1>Ergebnis: </h1>
+
+<footer>
+	<p>&copy; 2017 by Philip &amp; TJ</p>
+</footer>
+</body>
+
+</html>
