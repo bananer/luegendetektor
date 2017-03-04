@@ -11,8 +11,10 @@ $def with (form, text, result)
 				font-family: sans-serif;
 			}
 			div.result {
+				margin: 0 auto;
 				font-size: 3em;
 				line-height: 3.5em;
+				height: 4em;
 				width: 80%;
 				border: solid 5px #ffff;
 			}
@@ -24,7 +26,9 @@ $def with (form, text, result)
 				border-color: #900;
 				color: #900;
 			}
-
+			.caps {
+				text-transform: uppercase;
+			}
 		/* ]]> */
 	</style>
 </head>
@@ -42,7 +46,7 @@ $def with (form, text, result)
 	<input type="submit" value="prüfen" />
 </form>
 
-$if result: <div class="result $result">Ergebnis: $result</div>
+$if result: <div class="result caps $result">$result</div>
 $else: <div class="result">Ergebnis: </div>
 </content>
 <footer>
