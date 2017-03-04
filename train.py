@@ -35,15 +35,13 @@ labels = []
 
 
 for(text, fake) in data:
-    texts.append(clean_text(text))
+    texts.append(text)
     labels.append("fake" if fake else "real")
 
 X_train, X_test, y_train, y_test = train_test_split(texts, labels, test_size=0.1, random_state=1337)
 
 estimator = SVR(kernel="linear")
 
-forest = ExtraTreesClassifier(n_estimators=250,
-                              random_state=1337)
 
 stop_words = [
     "daãÿ", "dass", "ja", "titanic", "dpo", "shutterstock", "ssi", "dan", "was", "man", "ich",
@@ -52,15 +50,15 @@ stop_words = [
 
 vect = CountVectorizer(analyzer="word", token_pattern=r"(?u)\b[a-zA-Z]{2,}\b", stop_words=stop_words)
 
-xclf = forest
-#xclf = SGDClassifier(loss='hinge')
+
+#forest = ExtraTreesClassifier(n_estimators=10,
+#                              random_state=1337)
+#xclf = forest
+xclf = SGDClassifier(loss='hinge', penalty='elasticnet', n_jobs=-1)
 text_clf = Pipeline([
     ('vect', vect),
     ('tfidf', TfidfTransformer(use_idf=True)),
-    #('rfe', RFE(estimator, 5, step=1)),
     ('clf', xclf),
-    #('clf', MultinomialNB()),
-    #('clf', SGDClassifier(loss='hinge')),
 ])
 
 print "Classification start..."
