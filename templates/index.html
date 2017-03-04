@@ -7,39 +7,48 @@ $def with (form, text, result)
 	<title>Lügendetektor 3000</title>
 	<style type="text/css">
 		/* <[CDATA[ */
-			* {
-				font-family: sans-serif;
-			}
-			div.result {
-				margin: 0 auto;
-				font-size: 3em;
-				line-height: 3.5em;
-				height: 4em;
-				width: 80%;
-				border: solid 5px #ffff;
-			}
-			#text {
-				margin: 0 auto;
-				width: 80%;
-			}
-			.real {
-				border-color: #090;
-				color: #090;
-			}
-			.fake {
-				border-color: #900;
-				color: #900;
-			}
-			.caps {
-				text-transform: uppercase;
-			}
+        * {
+            font-family: sans-serif;
+        }
+        .result, footer, #text, #submit {
+            width: 800px;
+        }
+        
+        .result {
+            margin-top: 5px;
+            padding: auto;
+            font-size: 3em;
+            text-align: center;
+            border-style: solid;
+            border-width: 5px;
+            animation: fadein 1s;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        .real {
+            border-color: #090;
+            color: #090;
+        }
+        .fake {
+            border-color: #900;
+            color: #900;
+        }
+        .caps {
+            text-transform: uppercase;
+        }
+        footer p {
+            text-align: right;
+        }
 		/* ]]> */
 	</style>
 </head>
 
 <body>
 <header>
-	<img src="images/logo_agf.png" alt="Logo: Bundesagentur gegen Fakenews" />
 	<h1>Lügendetektor 3000</h1>
 </header>
 <content>
@@ -47,14 +56,13 @@ $def with (form, text, result)
 <form name="main" method="post">
 	$if not form.valid: <p class="error">Try again</p>
 	<textarea name="text" id="text" cols="100" rows="10">$text</textarea><br/>
-	<input type="submit" value="prüfen" />
+	<input type="submit" id="submit" value="prüfen" />
 </form>
 
 $if result: <div class="result caps $result">$result</div>
-$else: <div class="result">Ergebnis: </div>
 </content>
 <footer>
-	<p>&copy; 2017 by Philip &amp; TJ</p>
+	<p>PULS HACKDAYS 2017 &ndash; by Philip &amp; TJ</p>
 </footer>
 </body>
 
