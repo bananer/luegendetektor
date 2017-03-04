@@ -45,34 +45,37 @@ estimator = SVR(kernel="linear")
 forest = ExtraTreesClassifier(n_estimators=250,
                               random_state=1337)
 
-stop_words = ["daãÿ", "dass", "ja", "titanic"]
+stop_words = [
+    "daãÿ", "dass", "ja", "titanic", "dpo", "shutterstock", "ssi", "dan", "was", "man", "ich",
+    "foto", "wenn", "doch", "gar", "mir", "sie", "nicht", "so", "sich", "er", "es"
+]
 
 vect = CountVectorizer(analyzer="word", token_pattern=r"(?u)\b[a-zA-Z]{2,}\b", stop_words=stop_words)
 
+xclf = forest
+#xclf = SGDClassifier(loss='hinge')
 text_clf = Pipeline([
     ('vect', vect),
     ('tfidf', TfidfTransformer(use_idf=True)),
     #('rfe', RFE(estimator, 5, step=1)),
-    #('forest', forest),
+    ('clf', xclf),
     #('clf', MultinomialNB()),
-    ('clf', SGDClassifier(loss='hinge')),
+    #('clf', SGDClassifier(loss='hinge')),
 ])
 
-
+print "Classification start..."
 clf = text_clf.fit(X_train, y_train)
 
 features = vect.get_feature_names()
 
-#importances = forest.feature_importances_
-#std = np.std([tree.feature_importances_ for tree in forest.estimators_],
-#             axis=0)
-#indices = np.argsort(importances)[::-1]
-
-# Print the feature ranking
-#print("Feature ranking:")
-
-#for f in range(10):
-#    print("%d. feature %s (%f)" % (f + 1, features[indices[f]], importances[indices[f]]))
+if xclf == forest:
+    importances = forest.feature_importances_
+    std = np.std([tree.feature_importances_ for tree in forest.estimators_],
+                 axis=0)
+    indices = np.argsort(importances)[::-1]
+    print("Feature ranking:")
+    for f in range(10):
+        print("%d. feature %s (%f)" % (f + 1, features[indices[f]], importances[indices[f]]))
 
 predicted = clf.predict(X_test)
 #print "score: ", clf.score(y_test, X_test)
