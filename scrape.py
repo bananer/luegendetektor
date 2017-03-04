@@ -3,12 +3,11 @@
 from lxml import html
 import requests
 from sklearn.externals import joblib
-import MySQLdb
+from db import get_db
 import json
 
 
-db = MySQLdb.connect("localhost", "luegendetektor", "fake123", "luegendetektor")
-db.set_character_set('utf8')
+db = get_db()
 cursor = db.cursor()
 cursor.execute ("SELECT VERSION()")
 row = cursor.fetchone ()
