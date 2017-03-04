@@ -39,7 +39,7 @@ def scrape_titanic():
     fake_sources = [
     ]
 
-    for x in range(101, 1000):
+    for x in range(1, 1000):
         fake_sources.append({
             'url': "http://www.titanic-magazin.de/newsticker/seite/{}/".format(x),
             'text_selector': ".tt_news-bodytext"
@@ -57,7 +57,8 @@ def scrape_titanic():
 
 
 def scrape_br24():
-    for x in range(10, 12):
+    # TODO: remove "Quelle"
+    for x in range(1, 12):
         doc = requests.get("https://br24-backend-hackathon.br.de/api/v4/news?limit=1000&page={}".format(x))
         j = json.loads(doc.content)['data']
         for article in j:
@@ -68,23 +69,27 @@ def scrape_br24():
 
 def scrape_postillion():
     urls = set()
-    for x in range(1, 13):
-        page = requests.get("http://www.der-postillon.com/search?updated-max=2015-{}-01T00:00:00%2B00:00&max-results=50".format(x))
-        tree = html.fromstring(page.content)
-        links = tree.cssselect(".post-title.entry-title a")
-        for l in links:
-            url = l.attrib['href']
-            if len(url) > 0:
-                urls.add(url)
+    for y in range(2015, 2017):
+        for m in range(1, 13):
+            page = requests.get("http://www.der-postillon.com/search?updated-max={}-{}-01T00:00:00%2B00:00&max-results=50".format(y, m))
+            tree = html.fromstring(page.content)
+            links = tree.cssselect(".post-title.entry-title a")
+            for l in links:
+                url = l.attrib['href']
+                if len(url) > 0:
+                    urls.add(url)
 
     for url in urls:
         page = requests.get(url)
         tree = html.fromstring(page.content)
         text = tree.cssselect('.post-body')[0]
-        insert(text.text_content(), "postillion", 1)
+        text = re.sub('^.*\(dpo\) - ', '', text.text_content().strip())
+        insert(text, "postillion", 1)
 
 
+scrape_postillion()
 scrape_br24()
+scrape_titanic()
 
 
 # commit your changes
