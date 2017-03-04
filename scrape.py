@@ -2,9 +2,10 @@
 
 from lxml import html
 import requests
-from sklearn.externals import joblib
+from text import clean_text
 from db import get_db
 import json
+import re
 
 import requests_cache
 requests_cache.install_cache()
@@ -21,11 +22,11 @@ cursor.execute('SET character_set_connection=utf8;')
 
 
 def insert(text, source, fake):
-    text = text.strip()
+    text = clean_text(text.strip())
     if len(text) > 1000:
         print ">>> ", text[0:200]
         cursor.execute("INSERT INTO news (text, source, fake) VALUES (%s, %s, %s)", (
-            text.encode('utf-8'),
+            text,
             source.encode('utf-8'),
             1 if fake else 0
         ))

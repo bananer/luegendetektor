@@ -16,7 +16,6 @@ def strip_tags(html):
     return s.get_data()
 
 def clean_text(text):
-    text = HTMLParser.HTMLParser().unescape(text.decode("cp1252", "ignore"))
-    exclude = set(string.punctuation)
+    text = HTMLParser.HTMLParser().unescape(text)
     text = strip_tags(text)
     return text.encode("utf-8", "ignore")
