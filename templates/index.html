@@ -26,14 +26,20 @@ $def with (form, text, result)
 </head>
 
 <body>
-	<form name="main" method="post">
-$if not form.valid: <p class="error">Try again</p>
-<textarea name="text" id="text" cols="100" rows="10">$text</textarea><br/>
-<input type="submit" value="prüfen" /></form>
+<header>
+	<h1>Lügendetektor 3000</h1>
+</header>
+<content>
 
-$if result: <h1 class="$result">Ergebnis: $result</h1>
-$else: <h1>Ergebnis: </h1>
+<form name="main" method="post">
+	$if not form.valid: <p class="error">Try again</p>
+	<textarea name="text" id="text" cols="100" rows="10">$text</textarea><br/>
+	<input type="submit" value="prüfen" />
+</form>
 
+$if result: <div class="result $result">Ergebnis: $result</div>
+$else: <div class="result">Ergebnis: </div>
+</content>
 <footer>
 	<p>&copy; 2017 by Philip &amp; TJ</p>
 </footer>
