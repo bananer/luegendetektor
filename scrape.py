@@ -6,6 +6,8 @@ from sklearn.externals import joblib
 from db import get_db
 import json
 
+import requests_cache
+requests_cache.install_cache()
 
 db = get_db()
 cursor = db.cursor()
@@ -54,7 +56,7 @@ def scrape_titanic():
 
 
 def scrape_br24():
-    for x in range(3, 10):
+    for x in range(10, 12):
         doc = requests.get("https://br24-backend-hackathon.br.de/api/v4/news?limit=1000&page={}".format(x))
         j = json.loads(doc.content)['data']
         for article in j:
@@ -81,7 +83,7 @@ def scrape_postillion():
         insert(text.text_content(), "postillion", 1)
 
 
-scrape_postillion()
+scrape_br24()
 
 
 # commit your changes
