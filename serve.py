@@ -15,6 +15,7 @@ urls = (
 )
 app = web.application(urls, globals())
 
+clf = joblib.load('clf.pkl')
 
 class hello:
     def GET(self):
@@ -27,7 +28,6 @@ class hello:
         result = ""
         if form.validates():
             text = form['text'].value
-            clf = joblib.load('clf.pkl')
             predicted = clf.predict([text])
             result = predicted[0]
 
